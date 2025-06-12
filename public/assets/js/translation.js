@@ -1,43 +1,60 @@
-// *** translation.js
-
 const translations = {
     ar: {
         direction: 'rtl',
-        languageBtn: 'كوردی',
-        gamesText: 'ألعاب متنوعة في انتظارك',
+        languageBtn: 'عربی',
+        welcomeText: `بيور ويلنس خدمة تقدّم فيديوهات ونصائح لاسلوب حياة صحّي`,
+        welcomeInfo: `أثبت ذكائك، اكسب لقب "المتميزون"، <span class='bold-text'>واربح جوائز</span>`,
+        welcomeDesc: `كلما زادت نقاطك زادت فرصك بالفوز`,
         subscribe: "إشترك",
+        infoPhone: 'أدخل رقم جوالك لتتلقى رمز المرور',
+        infoPin: 'رجاء إدخال رمز المرور الذي تلقيته',
         confirmBtn: 'تأكيد الاشتراك',
-        welcomeText: '• اهلا بك في مسابقة "بطل الجائزة الكبرى',
-        continueText: 'تابع',
-        trialText: '• من أسياسيل للمشتركين الجدد أول ثلاث أيام مجانا ثم تكلفة الاشتراك 300 د.ع يوميا',
-        cancelText: '• لإلغاء الاشتراك ارسل 0 مجانا إلى 4603',
-        phoneNumber: 'أدخل رقم جوالك لتتلقى رمز المرور',
-        otpNumber: 'رجاء إدخال رمز المرور الذي تلقيته',
-        mobileWelcomeText: '• اهلا بك في مسابقة "بطل الجائزة الكبرى"',
-        mobileFreeText: '• من أسباسيل للمشتركين الجدد أول ثلاث أيام مجانا',
-        mobileCostText: '• ثم تكلفة الاشتراك 300 د.ع يوميا',
-        mobileCancelText: '• لإلغاء الاشتراك ارسل 0 مجانا إلى 4603',
+        continueText: 'متابعة',
+        footerText: '• أهلاً بك في بيور ويلنيس، باشتراكك انت توافق على الاحكام والشروط التالية:',
+        startText: '• كلفة الرسالة المستلمة 240 د.ع. يوميًا',
+        trialText: '• يحصل المشتركين الجدد على يوم مجاني، ثم يتجدد الاشتراك تلقائيًا',
+        cancelText: '• لالغاء الاشتراك ارسل UPW مجاناً الى 3368.',
+        helpText: '• للمساعدة أو للحصول على معلومات اضافية الرجاء التواصل: support@prime0build.co',
         failureText: "عذرًا لا يمكنك الاشتراك في الخدمة",
         successText: "شكرًا لاشتراكك في الخدمة"
     },
     ku: {
         direction: 'rtl',
-        languageBtn: 'عربی',
-        gamesText: 'یارییە جۆراوجۆرەکان چاوەڕێتن',
+        languageBtn: 'كوردی',
+        welcomeText: `خزمەتگوزاری Pure Wellness کە ڤیدیۆ و ئامۆژگاری بۆ شێوازی ژیان دابین دەکات`,
+        welcomeInfo: `سەلمێنراوە کە تۆ  <span class='bold-text'> زانیاریت هەیە</span>`,
+        welcomeDesc: `خاڵی زیاتر = ئەگەری بردنەوە زیاترە`,
         subscribe: "بەشداربە",
+        infoPhone: 'بەشداریکردنەکە پشتڕاست بکەرەوە، ژمارەی مۆبایلەکەت بنووسە بۆ وەرگرتنی کۆدی هاتوچۆ',
+        infoPin: 'تکایە ئەو پاسکۆدەی کە وەرتگرتووە دابنێ',
         confirmBtn: 'پشتڕاستکردنەوەی بەشداریکردن',
-        welcomeText: '• بەخێربێیت بۆ پێشبڕکێی "پاڵەوانی خەڵاتی گەورە"',
-        continueText: 'فۆڵۆو بکە',
-        trialText: '• لە ئێسپاسیلەوە بۆ بەشداربووە نوێیەکان بۆ سێ ڕۆژی یەکەم بەخۆڕاییە پاشان نرخی بەشداریکردن 300 د.ع ڕۆژانە',
-        cancelText: '• بۆ هەڵوەشاندنەوەی بەشداریکردن 0 بنێرە بەخۆڕایی بۆ 4603',
-        phoneNumber: 'بەشداریکردنەکە پشتڕاست بکەرەوە، ژمارەی مۆبایلەکەت بنووسە بۆ وەرگرتنی کۆدی هاتوچۆ',
-        otpNumber: 'تکایە ئەو پاسکۆدەی کە وەرتگرتووە دابنێ',
-        mobileWelcomeText: '• بەخێربێیت بۆ پێشبڕکێی "پاڵەوانی خەڵاتی گەورە"',
-        mobileFreeText: '• لە ئێسپاسیلەوە بۆ بەشداربووە نوێیەکان بۆ سێ ڕۆژی یەکەم بەخۆڕاییە',
-        mobileCostText: '• پاشان نرخی بەشداریکردن 300 د.ع ڕۆژانە',
-        mobileCancelText: '• بۆ هەڵوەشاندنەوەی بەشداریکردن 0 بنێرە بەخۆڕایی بۆ 4603',
+        continueText: 'بەدواداچوون',
+        footerText: '• بەخێربێن بۆ Pure Wellness، بە بەشداریکردنت، تۆ ڕەزامەندیت لەسەر ئەم مەرج و رێسایانەی خوارەوە:',
+        startText: '• تێچووی پەیامی وەرگرتن 240 D.',
+        trialText: '• بەشداربووانی نوێ ڕۆژێکی بێ بەرامبەر وەردەگرن، پاشان بەشداریکردنەکە بە شێوەیەکی ئۆتۆماتیکی نوێ دەکرێتەوە',
+        cancelText: '• بۆ هەڵوەشاندنەوەی بەشداریکردنەکە، UPW بە خۆڕایی بنێرە بۆ 3368.',
+        helpText: '• بۆ یارمەتی یان بۆ زانیاری زیاتر، تکایە پەیوەندی بکەن بە: support@prime0build.co',
         failureText: "ببورن ناتوانن سەبسکرایبی خزمەتگوزارییەکە بکەن",
         successText: "سوپاس بۆ بەشداریکردنتان لە خزمەتگوزارییەکە"
+    },
+    en: {
+        direction: 'ltr',
+        languageBtn: 'En',
+        welcomeText: `Pure Wellness is a service that offers videos and tips for a healthy lifestyle.`,
+        welcomeInfo: `Prove Your Intelligence, Earn the Title of The Distinguished, and <span class='bold-text'>Get Rewarded</span>`,
+        welcomeDesc: 'Higher points = Higher chance of winning',
+        subscribe: "Subscribe",
+        infoPhone: "Enter your mobile to receive a PIN code",
+        infoPin: "Enter PIN code",
+        continueText: 'Continue',
+        confirmBtn: "Confirm Subscription",
+        footerText: 'Welcome to Pure Wellness. By subscribing, you agree to the following terms and conditions:',
+        startText: 'The cost of the received message is 240 IQD per day.',
+        trialText: 'New subscribers get a free day, then the subscription renews automatically.',
+        cancelText: 'To unsubscribe, send UPW for free to 3368.',
+        helpText: 'For assistance or additional information, please contact: support@prime0build.co',
+        failureText: "Sorry, you cannot subscribe to the service.",
+        successText: "Thank you for subscribing to the service."
     }
 };
 
@@ -51,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Toggle between languages
 function toggleLanguage() {
     const currentLang = localStorage.getItem('preferredLanguage') || 'ar';
-    const newLang = currentLang === 'ar' ? 'ku' : 'ar';
+    const newLang = currentLang === 'ar' ? 'ku' : currentLang === 'ku' ? 'en' : 'ar';
     changeLanguage(newLang);
 }
 
@@ -69,7 +86,8 @@ function changeLanguage(lang) {
         if (element) {
             if (isHTML) {
                 element.innerHTML = content;
-            } else {
+            }
+            else {
                 element.textContent = content;
             }
         }
@@ -77,28 +95,22 @@ function changeLanguage(lang) {
 
     // Update language toggle button
     safelyUpdateElement('lang-toggle', translations[lang].languageBtn);
-
     // Update all text elements
-    safelyUpdateElement('brand-name', translations[lang].brandName, true);
     safelyUpdateElement('success-text', translations[lang].successText, true);
     safelyUpdateElement('failure-text', translations[lang].failureText, true);
-    safelyUpdateElement('games-text', translations[lang].gamesText);
     safelyUpdateElement('confirm-btn', translations[lang].confirmBtn);
+    safelyUpdateElement('welcome-text', translations[lang].welcomeText, true);
+    safelyUpdateElement('welcome-info', translations[lang].welcomeInfo,true);
+    safelyUpdateElement('welcome-description', translations[lang].welcomeDesc,true);
     safelyUpdateElement('subscribe', translations[lang].subscribe);
-    safelyUpdateElement('welcome-text', translations[lang].welcomeText);
     safelyUpdateElement('continue', translations[lang].continueText);
+    safelyUpdateElement('footer-text', translations[lang].footerText);
+    safelyUpdateElement('start-text', translations[lang].startText);
     safelyUpdateElement('trial-text', translations[lang].trialText);
+    safelyUpdateElement('help-text', translations[lang].helpText);
     safelyUpdateElement('cancel-text', translations[lang].cancelText);
-    safelyUpdateElement('games-phone', translations[lang].phoneNumber);
-    safelyUpdateElement('games-otp', translations[lang].otpNumber);
-    safelyUpdateElement('mobile-welcome-text', translations[lang].mobileWelcomeText);
-    safelyUpdateElement('mobile-free-text', translations[lang].mobileFreeText);
-    safelyUpdateElement('mobile-cost-text', translations[lang].mobileCostText);
-    safelyUpdateElement('mobile-cancel-text', translations[lang].mobileCancelText);
-
-    // document.getElementById('#welcome-text').style.fontWeight = '900'
-    // document.getElementById('#trial-text').style.fontWeight = '900'
-    // document.getElementById('#cancel-text').style.fontWeight = '900'
+    safelyUpdateElement('info-phone', translations[lang].infoPhone);
+    safelyUpdateElement('info-pin', translations[lang].infoPin);
 }
 
 

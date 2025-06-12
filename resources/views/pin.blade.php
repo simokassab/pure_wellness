@@ -1,68 +1,49 @@
-@php
-    $projectSource = request()->query('source'); // Get source from URL
-    $source = \App\Models\ProjectSource::where('uuid', $projectSource)->first()->source->name;
-    $isGoogleAds = in_array($source, ['Google-Ads']);
-@endphp
-    <!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Grand Hero</title>
+    <title>Pure Welness</title>
+    <link rel="shortcut icon" href="{{ asset('assets/favicon-32x32.png') }}" sizes="32x32" type="image/svg">
+    <link rel="shortcut icon" href="{{ asset('assets/favicon-16x16.png') }}" sizes="16x16" type="image/svg">
+    <link rel="shortcut icon" href="{{ asset('assets/favicon.ico') }}" sizes="72x72" type="image/svg">
     <link rel="stylesheet" href="{{ asset('assets/css/index.css') }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    @if($isGoogleAds)
-        <!-- Google Tag Manager -->
-        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-N7FQGPP7');</script>
-        <!-- End Google Tag Manager -->
-    @endif
+
 </head>
-
-
 <body>
-@if($isGoogleAds)
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N7FQGPP7"
-                      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-@endif
-<div class="lang-switcher">
+<section class="flex flex-center">
     <button id="lang-toggle" class="lang-btn" onclick="toggleLanguage()">كردی</button>
-</div>
 
-<div class="container">
-    <div class="card">
-        <img class='logo' alt="logo" src="{{ asset('assets/Logo-Grand.png') }}" width="100"/>
+    <img alt="bio" src="{{ asset('assets/image.png') }}" class="image">
 
-        <img class="image"  src="{{ asset('assets/puzzle.png') }}" width="160"/>
-        <div class="text-content">
-            <h2 id="games-text">ألعاب متنوعة في انتظارك</h2>
+    <div class="form flex flex-between">
+        <h1 id='welcome-text' class="welcome-text">بيور ويلنس خدمة تقدّم فيديوهات ونصائح لاسلوب حياة صحّي</h1>
+        <div class="flex flex-between content">
+            <h2 id="info-phone" class="info" style="padding-top: 2rem;">أدخل رقم جوالك لتتلقى رمز المرور</h2>
 
-            <p id="games-phone">أدخل رقم جوالك لتتلقى رمز المرور</p>
-        </div>
+            <div class="flex flex-center" style="gap: 1rem;">
+                <div class="phone flex">
+                    <p>+967</p>
+                    <input id='phone-number' type="text" title="phone">
+                </div>
 
-        <div class="form-group">
-            <div class="phone-input" style="display: flex; gap: 1rem;">
-                <p style="color: black">+964</p>
-                <input title="'phone-number" type="text" maxlength="15"  id="phone"/>
+                <p class="error"></p>
+
+                <button aria-label="submit" type="submit" id="continue" class="submit-btn">تابع</button>
             </div>
-            <button class="submit-button" style="display: none" id="continue">تابع</button>
-            <p id="loading-message" style="display: none; text-align: center; margin-top: 10px;">الرجاء الانتظار ...</p>
-
-        </div>
-
-        <div class="footer-info">
-            <p id="welcome-text">• اهلا بك في مسابقة "بطل الجائزة الكبرى"</p>
-            <p id="trial-text">• من أسياسيل للمشتركين الجدد أول ثلاث أيام مجانا ثم تكلفة الاشتراك 300 د.ج يوميا</p>
-            <p id="cancel-text">• لإلغاء الاشتراك ارسل 0 مجانا إلى 4603</p>
+            <div class="instructions">
+                <p id="footer-text"> اهلا بك في مسابقة "بطل الجائزة الكبرى"</p>
+                <p id="start-text"> كلفة الرسالة المستلمة 240 د.ع. يوميًا</p>
+                <p id="trial-text"> من أسياسيل للمشتركين الجدد أول ثلاث أيام مجانا ثم تكلفة الاشتراك 300 د.ج يوميا </p>
+                <p id="cancel-text"> لإلغاء الاشتراك ارسل 0 مجانا إلى 4603 </p>
+                <p id="help-text">للمساعدة أو للحصول على معلومات اضافية الرجاء التواصل: support@prime0build.co</p>
+            </div>
         </div>
     </div>
-</div>
 
+</section>
 <script src="{{ asset('assets/js/translation.js') }}"></script>
 </body>
 <script>

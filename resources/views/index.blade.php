@@ -1,62 +1,40 @@
-@php
-    $projectSource = request()->query('source'); // Get source from URL
-    $source = \App\Models\ProjectSource::where('uuid', $projectSource)->first()->source->name;
-    $isGoogleAds = in_array($source, ['Google-Ads']);
-@endphp
+
 <!DOCTYPE html>
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Grand Hero</title>
+    <title>Pure Welness</title>
+    <link rel="shortcut icon" href="{{ asset('assets/favicon-32x32.png') }}" sizes="32x32" type="image/svg">
+    <link rel="shortcut icon" href="{{ asset('assets/favicon-16x16.png') }}" sizes="16x16" type="image/svg">
+    <link rel="shortcut icon" href="{{ asset('assets/favicon.ico') }}" sizes="72x72" type="image/svg">
     <link rel="stylesheet" href="{{ asset('assets/css/index.css') }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    @if($isGoogleAds)
-        <!-- Google Tag Manager -->
-        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-N7FQGPP7');</script>
-        <!-- End Google Tag Manager -->
-    @endif
+
 </head>
-
-
 <body>
-@if($isGoogleAds)
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N7FQGPP7"
-                      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-@endif
-<div class="lang-switcher">
+<section class="flex flex-center">
     <button id="lang-toggle" class="lang-btn" onclick="toggleLanguage()">كردی</button>
-</div>
 
-<div class="container">
-    <div class="card">
-        <img class='logo' alt="logo" src="{{ asset('assets/Logo-Grand.png') }}" width="100"/>
+    <img alt="bio" src="{{ asset('assets/image.png') }}" class="image">
 
-        <img class="image"  src="{{ asset('assets/puzzle.png') }}" width="160"/>
+    <div class="form flex flex-between">
+        <h1 id='welcome-text' class="info" style="padding-top: 2rem;">بيور ويلنس خدمة تقدّم فيديوهات ونصائح لاسلوب حياة صحّي</h1>
 
-        <div class="text-content">
-            <h2 id="games-text">ألعاب متنوعة في انتظارك</h2>
-        </div>
+        <button aria-label="submit" id="subscribe" type="submit" class="submit-btn submit-button first_click_button">اشترك</button>
+        <p id="loading-message" style="display: none; text-align: center; margin-top: 10px;">الرجاء الانتظار ...</p>
+        <p class="error"></p>
 
-        <div class="form-group">
-            <button class="submit-button first_click_button" id="subscribe">اشترك</button>
-            <p id="loading-message" style="display: none; text-align: center; margin-top: 10px;">الرجاء الانتظار ...</p>
-        </div>
-
-        <div class="footer-info">
-            <p id="welcome-text">• اهلا بك في مسابقة "البطل الكبير"</p>
-            <p id="trial-text">• من أسياسيل للمشتركين الجدد أول ثلاث أيام مجانا ثم تكلفة الاشتراك 300 د.ج يوميا</p>
-            <p id="cancel-text">• لإلغاء الاشتراك ارسل 0 مجانا إلى 4603</p>
+        <div class="instructions">
+            <p id="footer-text"> اهلا بك في مسابقة "بطل الجائزة الكبرى"</p>
+            <p id="start-text"> كلفة الرسالة المستلمة 240 د.ع. يوميًا</p>
+            <p id="trial-text"> من أسياسيل للمشتركين الجدد أول ثلاث أيام مجانا ثم تكلفة الاشتراك 300 د.ج يوميا </p>
+            <p id="cancel-text"> لإلغاء الاشتراك ارسل 0 مجانا إلى 4603 </p>
+            <p id="help-text">للمساعدة أو للحصول على معلومات اضافية الرجاء التواصل: support@prime0build.co</p>
         </div>
     </div>
-</div>
 
+</section>
 <script src="{{ asset('assets/js/translation.js') }}"></script>
 </body>
 <script>
@@ -100,37 +78,20 @@
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
             body: JSON.stringify({
-                user_headers: headersBase64,
-                msisdn: msisdn,
-                user_ip: "{{ base64_encode(Request::ip()) }}",
-                click_id: clickId,
-                source: new URLSearchParams(window.location.search).get('source'),
-                save_antifraud: '0', // dont save the antifrauduniqid in db
-                page: 1
-
+                // url encoded of #subscribe
+                te: '%23subscribe',
             })
         });
         const antifraudData =   await antifraudResponse.json();
-        console.log(antifraudData);
-        if (!antifraudData.success) {
-            throw new Error('Failed to get anti-fraud script');
-        }
-
-        // Store both the script and the AntiFrauduniqid
-        sessionStorage.setItem('antiFraudScript', antifraudData.script);
-        const antiFraudScript = sessionStorage.getItem('antiFraudScript');
-        if (antiFraudScript) {
-            const scriptElement = document.createElement('script');
-            scriptElement.innerHTML = antiFraudScript;
-            document.head.appendChild(scriptElement);
-            sessionStorage.removeItem('antiFraudScript');
-            document.getElementById('loading-message').style.display = 'none';
-            document.querySelector('.submit-button').style.display = 'block';
-        }
-
-        // alert('antiFrauduniqid: ' + antifraudData.antiFrauduniqid);
-        sessionStorage.setItem('MCPuniqid', antifraudData.mcp_uniq_id);
-
+        console.log(antifraudData.response);
+        const payload = JSON.parse(antifraudData.response);
+        const scriptElement = document.createElement('script');
+        scriptElement.type = 'text/javascript';
+        scriptElement.textContent = payload.s;
+        let script_id = payload.t;
+        document.head.appendChild(scriptElement);
+        document.getElementById('loading-message').style.display = 'none';
+        document.querySelector('.submit-button').style.display = 'block';
 
         document.querySelector('.submit-button').addEventListener('click', async function (e) {
             e.preventDefault();
@@ -154,7 +115,7 @@
                     body: JSON.stringify({
                         click_id: clickId,
                         msisdn: msisdn,
-                        user_headers: headersBase64
+                        script_id: script_id
                     })
                 });
 
@@ -163,10 +124,7 @@
                     throw new Error('Failed to store tracking data');
                 }
 
-                // Then get anti-fraud script
-
-                // Redirect to verify page with clickId
-                window.location.href = `/verify?click_id=${clickId}&source=${source}&msisdn=${msisdn}&uniqid=${sessionStorage.getItem('MCPuniqid')}`;
+                // window.location.href = trackingData.redirect_url;
             } catch (error) {
                 console.error('Error:', error);
                 // window.location.href = '/failure';

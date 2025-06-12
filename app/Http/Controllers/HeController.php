@@ -15,12 +15,10 @@ use Illuminate\Support\Facades\Http;
 class HeController extends Controller
 {
     private array $config = [
-        'serviceIdAr' => '964770001',
-        'serviceIdKU' => '964770004',
-        'spId' => '964773003',
-        'shortcode' => '4600',
-        'channelId' => '22718',
-        'opSPID' => '13160',
+        'serviceId' => '911',
+        'spId' => '251',
+        'shortcode' => '3368',
+        'servicename' => 'Pure Wellness'
     ];
     // Common headers where mobile carriers might send MSISDN
     private $msisdnHeaders = [
@@ -34,7 +32,6 @@ class HeController extends Controller
     ];
 
     private $digitalAdsBaseUrl = 'http://callback.digitalabs.ae:9090/actions/';
-    private $smadex_url = "https://geo-tracker.smadex.com/hyperad/tracking/action/";
 
     public function index(Request $request)
     {
@@ -46,6 +43,7 @@ class HeController extends Controller
             return redirect('failure?errors=source_not_found');
         }
         $msisdn = $this->getMsisdnFromHeaders($request);
+        $msisdn = "9647701394275";
         if (!$msisdn) {
 //            if ($request->has('testmode') && $request->input('testmode') == '1') {
 //                Redirect::create([
@@ -138,12 +136,34 @@ class HeController extends Controller
             // Create the tracking record
             $tracking = Tracking::where('msisdn', $request->input('msisdn'))
                 ->where('click_id', $clickId)
+                ->where('project_source_id', $trackingData['project_source_id'])
                 ->first();
             $tracking->first_click = true;
+            $tracking->anti_fraud_click_id = $request->input('script_id');
             $tracking->save();
+
+//             redirect to http://ziq-he.prime-build.co:8090/HE/oneclick/subscribeUser.php?serviceId=$serviceId&spId=$spId&shortcode=$shortcode&ti=$ti&ts=$ts&servicename=$servicename&merchantname=$merchantname
+
+            $baseUrl = 'http://ziq-he.prime-build.co:8090/HE/oneclick/subscribeUser.php';
+            $queryParams = [
+                'serviceId' => $this->config['serviceId'],
+                'spId' => $this->config['spId'],
+                'shortcode' => $this->config['shortcode'],
+                'ti' => Session::get('transaction_id'), // Transaction ID from session
+                'ts' => time(), // Current timestamp
+                'servicename' => $this->config['servicename'],
+                'merchantname' => 'digitalabs',
+                'msisdn' => $tracking->msisdn,
+                'ClickID' => $tracking->anti_fraud_click_id,
+            ];
+
+
+//    return the redirect URL
+            $redirectUrl = $baseUrl . '?' . http_build_query($queryParams);
             return response()->json([
                 'success' => true,
-                'tracking_id' => $tracking->id
+                'tracking_id' => $tracking->id,
+                'redirect_url' => $redirectUrl,
             ]);
 
         } catch (\Exception $e) {
@@ -339,117 +359,37 @@ class HeController extends Controller
 
     public function getAntiFraudScript(Request $request)
     {
-        try {
-            $baseUrl = 'https://sdp.salasto.dev:2053/Shield/AntiFraud/Prepare/';
+//        try {
+            $baseUrl = 'http://ziq-he.prime-build.co:8090/dcbprotect.php';
+//            generate transaction id unique for each request
+            $transactionId = uniqid('tx_', true);
+//            save to session for later use
+            Session::put('transaction_id', $transactionId);
             $queryParams = [
-                'Page' => $request->page,
-                'ChannelID' => $this->config['channelId'],
-                'ClickID' => $request->click_id,
-                'Headers' => $request->user_headers,
-                'UserIP' => $request->user_ip,
-                'MSISDN' => $request->msisdn
+                'action' => 'script',
+                'ti' => $transactionId,
+                'te' => $request->te,
+//                ts is the current timestamp of the transaction
+                'ts' => time(),
+                'servicename' => $this->config['servicename'],
+                'merchantname' => 'digitalabs',
+                'type' => 'he',
             ];
-            $project_source = ProjectSource::where('uuid', $request->source)->first();
-            $tracking = Tracking::where('msisdn', $request->msisdn)->where('click_id', $request->click_id)
-                ->where('project_source_id',$project_source->id)
-                ->first();
-            $provider =  $request->save_antifraud == '1' ? 'anti_fraud_1' : 'anti_fraud_2';
-            $integration = IntegrationLog::updateOrCreate(
-                [
-                    'provider' => $provider,
-                    'tracking_id' => $tracking->id,
-                    'event_type' => 'request',
-                    'status' => 'success',
-                ],
-                [
-                    'payload' => $queryParams,
-                    'url' => $baseUrl,
-//                    'metadata' => [
-//                        'body' => $queryParams
-//                    ]
-                ]);
-
+//
             // Make the request
             $response = Http::get($baseUrl . '?' . http_build_query($queryParams));
-//            i want to check if response header has AntiFrauduniqid
-            if ($response->header('AntiFrauduniqid')) {
-                $integration->status = 'success';
-                $integration->metadata = [
-                    'header' => $response->headers(),
-                ];
+////        // Check if the response is successful
+           if (!$response->successful()) {
+                return Response::json([
+                    'success' => false,
+                    'message' => 'Failed to retrieve anti-fraud script',
+                ], 500);
             }
-            else {
-                $integration->status = 'failed';
-                $integration->error_message = $response->body();
-                $integration->metadata = [
-                    'body' => $response->body()
-                ];
-            }
-            $integration->save();
-            if ($request->save_antifraud == '1') {
-                $tracking->anti_fraud_click_id = $response->header('AntiFrauduniqid');
-            }
-            if ($request->page == '1'){
-                $tracking->mcp_uniq_id = $response->header('Mcpuniqid');
-            }
-            $tracking->first_click = true;
-            $tracking->save();
-            $query_params = [
-                'clickId' => $tracking->anti_fraud_click_id,
-                'campaignId' => $tracking->projectSource->campaign_id,
-            ];
-
-            $d_integration = IntegrationLog::updateOrCreate(
-                [
-                    'provider' => 'digital_ads',
-                    'tracking_id' => $tracking->id,
-                    'event_type' => 'request',
-                ],
-                [
-                    'payload' => $query_params,
-                    'url' => $this->digitalAdsBaseUrl . 'VisitCallBack',
-//                    'metadata' => [
-//                        'body' => $query_params
-//                    ]
-                ]);
-
-            $response_digital_ads = Http::get($this->digitalAdsBaseUrl . 'VisitCallBack?' . http_build_query($query_params));
-            if ($response_digital_ads->status() == '200') {
-                $d_integration->status = 'success';
-                $d_integration->metadata = [
-                    'header' => $response_digital_ads->headers(),
-                    'body' => $response_digital_ads->body()
-                ];
-            }
-            else {
-                $d_integration->status = 'failed';
-                $d_integration->error_message = $response_digital_ads->body();
-                $d_integration->metadata = [
-                    'body' => $response_digital_ads->body()
-                ];
-            }
-
-            $d_integration->save();
-            if (!$response->successful()) {
-                redirect('failure');
-                throw new \Exception('Anti-fraud API request failed');
-            }
-
-
-            // Get the script from response body and AntiFrauduniqid from header
             return Response::json([
                 'success' => true,
-                'script' => $response->body(),
-                'antiFrauduniqid' => $response->header('AntiFrauduniqid'),
-                'mcp_uniq_id' => $response->header('Mcpuniqid'),
+                'response' => $response->body(),
             ]);
 
-        } catch (\Exception $e) {
-            return Response::json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
-        }
     }
 
     public function savePreferredLanguage(Request $request)
@@ -463,7 +403,7 @@ class HeController extends Controller
     public function handleSubscription(Request $request)
     {
         try {
-            $baseUrl = 'http://iq.as.salasto.heliveservices.com:8888/asia-he/iq/HE/v1.2/doubleclick/sub.php';
+            $baseUrl = 'http://ziq-he.prime-build.co:8090/HE/oneclick/subscribeUser.php';
 
             // Get MSISDN from session
             $msisdn = $request->msisdn;
