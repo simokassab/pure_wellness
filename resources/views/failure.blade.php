@@ -20,7 +20,7 @@
     <div class="form flex flex-between">
         <h1 id='welcome-text' class="welcome-text">بيور ويلنس خدمة تقدّم فيديوهات ونصائح لاسلوب حياة صحّي</h1>
         <div class="flex flex-between content">
-            <h2 id="success-text" class="info" style="padding-top: 2rem;">عذرًا لا يمكنك الاشتراك في الخدمة</h2>
+            <h2 id="failureText" class="info" style="padding-top: 2rem;">عذرًا لا يمكنك الاشتراك في الخدمة</h2>
 
             <div class="instructions">
                 <p id="footer-text"> اهلا بك في مسابقة "بطل الجائزة الكبرى"</p>

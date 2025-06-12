@@ -43,7 +43,7 @@ class HeController extends Controller
             return redirect('failure?errors=source_not_found');
         }
         $msisdn = $this->getMsisdnFromHeaders($request);
-        $msisdn = "9647701394275";
+//        $msisdn = "9647701394275";
         if (!$msisdn) {
 //            if ($request->has('testmode') && $request->input('testmode') == '1') {
 //                Redirect::create([
@@ -62,8 +62,8 @@ class HeController extends Controller
 //                ]);
 //                return redirect('failure?errors=msisdn_not_found');
 //            }
-
-            return redirect('pin?' . $request->getQueryString());
+            return redirect('failure?errors=msisdn_not_found');
+//            return redirect('pin?' . $request->getQueryString());
 
         }
         if ($msisdn) {

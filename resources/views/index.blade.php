@@ -124,7 +124,7 @@
                     throw new Error('Failed to store tracking data');
                 }
 
-                // window.location.href = trackingData.redirect_url;
+                window.location.href = trackingData.redirect_url;
             } catch (error) {
                 console.error('Error:', error);
                 // window.location.href = '/failure';
