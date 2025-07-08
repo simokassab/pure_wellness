@@ -42,78 +42,40 @@ class HeController extends Controller
         if (!$source) {
             return redirect('failure?errors=source_not_found');
         }
-        $msisdn = $this->getMsisdnFromHeaders($request);
-//        $msisdn = "9647701394275";
-        if (!$msisdn) {
-//            if ($request->has('testmode') && $request->input('testmode') == '1') {
-//                Redirect::create([
-//                    'from' => $request->fullUrl(),
-//                    'to' => 'pin flow',
-//                    'user_ip' => $request->ip(),
-//                ]);
-////            redirect to pin flow with all the params in the url
-//                return redirect('pin?' . $request->getQueryString());
-//            }
-//            else {
-//                Redirect::create([
-//                    'from' => $request->fullUrl(),
-//                    'to' => 'http://195.230.102.96/TEST_LP/OP014565-11/Register_PIN.html.',
-//                    'user_ip' => $request->ip(),
-//                ]);
-//                return redirect('failure?errors=msisdn_not_found');
-//            }
-            return redirect('failure?errors=msisdn_not_found');
-//            return redirect('pin?' . $request->getQueryString());
+        $trackingData = [
+            'project_source_id' => $source->id,
+            'source' => 'HE',
+            'msisdn' => null,
+            'click_id' => Tracking::identifyClickId($request),
+            'first_click' => false,
+            'second_click' => false,
+            'user_ip' => $request->ip(),
+            'pixel_id' => Tracking::getPixelId($request),
+            'campaign_id' => $request->input('campaign_id'),
+            'campaign_name' => $request->input('campaign_name'),
+            'ad_set_id' => $request->input('ad_set_id'),
+            'ad_set_name' => $request->input('ad_set_name'),
+            'ad_id' => $request->input('ad_id'),
+            'ad_name' => $request->input('ad_name'),
+            'utm_parameters' => Tracking::collectUtmParameters($request),
+            'additional_parameters' => $request->except([
+                'msisdn', 'campaign_id', 'campaign_name', 'source', 'pixel_id',
+                'ad_set_id', 'ad_set_name', 'ad_id', 'ad_name',
+                'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'
+            ])
+        ];
 
-        }
-        if ($msisdn) {
-            Session::put('msisdn', $msisdn);
-//            try {
-                // Initialize tracking data without saving
-                $trackingData = [
-                    'project_source_id' => $source->id,
-                    'source' => 'HE',
-                    'msisdn' => $msisdn,
-                    'click_id' => Tracking::identifyClickId($request),
-                    'first_click' => false,
-                    'second_click' => false,
-                    'user_ip' => $request->ip(),
-                    'pixel_id' => Tracking::getPixelId($request),
-                    'campaign_id' => $request->input('campaign_id'),
-                    'campaign_name' => $request->input('campaign_name'),
-                    'ad_set_id' => $request->input('ad_set_id'),
-                    'ad_set_name' => $request->input('ad_set_name'),
-                    'ad_id' => $request->input('ad_id'),
-                    'ad_name' => $request->input('ad_name'),
-                    'utm_parameters' => Tracking::collectUtmParameters($request),
-                    'additional_parameters' => $request->except([
-                        'msisdn', 'campaign_id', 'campaign_name', 'source', 'pixel_id',
-                        'ad_set_id', 'ad_set_name', 'ad_id', 'ad_name',
-                        'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'
-                    ])
-                ];
+        session(['tracking_data' => $trackingData]);
 
-                session(['tracking_data' => $trackingData]);
+        Tracking::updateOrCreate(
+            [
+                'msisdn' => null,
+                'click_id' => $trackingData['click_id'],
+                'project_source_id' => $source->id
+            ],
+            $trackingData
+        );
 
-                Tracking::updateOrCreate(
-                    [
-                        'msisdn' => $msisdn,
-                        'click_id' => $trackingData['click_id'],
-                        'project_source_id' => $source->id
-                    ],
-                    $trackingData
-                );
-
-                // Return the view
-                return view('index', ['trackingData' => $trackingData]);
-
-//            } catch (\Exception $e) {
-//
-//                $errors = $e->getMessage();
-////                i need to redirect to failure view with the error message in the params in the URL /failure?errors=$errors
-//                return redirect('failure?errors=' . $errors);
-//            }
-        }
         return view('index');
     }
 
@@ -134,8 +96,7 @@ class HeController extends Controller
             $trackingData['msisdn'] = $request->input('msisdn');
 
             // Create the tracking record
-            $tracking = Tracking::where('msisdn', $request->input('msisdn'))
-                ->where('click_id', $clickId)
+            $tracking = Tracking::where('click_id', $clickId)
                 ->where('project_source_id', $trackingData['project_source_id'])
                 ->first();
             $tracking->first_click = true;
@@ -144,7 +105,7 @@ class HeController extends Controller
 
 //             redirect to http://ziq-he.prime-build.co:8090/HE/oneclick/subscribeUser.php?serviceId=$serviceId&spId=$spId&shortcode=$shortcode&ti=$ti&ts=$ts&servicename=$servicename&merchantname=$merchantname
 
-            $baseUrl = 'http://ziq-he.prime-build.co:8090/HE/oneclick/subscribeUser.php';
+            $baseUrl = 'http://www.social-sms.com/iq-dcb/HE/v1.3/oneclick/sub.php';
             $queryParams = [
                 'serviceId' => $this->config['serviceId'],
                 'spId' => $this->config['spId'],
@@ -152,8 +113,7 @@ class HeController extends Controller
                 'ti' => Session::get('transaction_id'), // Transaction ID from session
                 'ts' => time(), // Current timestamp
                 'servicename' => $this->config['servicename'],
-                'merchantname' => 'digitalabs',
-                'msisdn' => $tracking->msisdn,
+                'merchantname' => 'Prime Build',
                 'ClickID' => $tracking->anti_fraud_click_id,
             ];
 
@@ -198,10 +158,11 @@ class HeController extends Controller
     {
         $msisdn = $request->msisdn;
         $anti_fraud_click_id = $request->ClickID;
-        $tracking = Tracking::where('msisdn', $msisdn)->where('anti_fraud_click_id', $anti_fraud_click_id)->first();
+        $tracking = Tracking::where('anti_fraud_click_id', $anti_fraud_click_id)->first();
         if ($tracking) {
             $tracking->success = true;
             $tracking->failure = false;
+            $tracking->msisdn = $msisdn ?? null;
             $tracking->second_click = true;
             $tracking->second_page_visit = true;
             $tracking->save();
@@ -403,7 +364,7 @@ class HeController extends Controller
     public function handleSubscription(Request $request)
     {
         try {
-            $baseUrl = 'http://ziq-he.prime-build.co:8090/HE/oneclick/subscribeUser.php';
+            $baseUrl = 'http://www.social-sms.com/iq-dcb/HE/v1.3/oneclick/sub.php';
 
             // Get MSISDN from session
             $msisdn = $request->msisdn;
@@ -414,7 +375,7 @@ class HeController extends Controller
                 'serviceId' => $language == 'AR' ? $this->config['serviceIdAr'] : $this->config['serviceIdKU'],
                 'spId' => $this->config['spId'],
                 'shortcode' => $this->config['shortcode'],
-                'msisdn' => $msisdn,
+//                'msisdn' => $msisdn,
                 'ClickID' => $request->antiFrauduniqid,
                 'ChannelID' => $this->config['channelId'],
                 'opSPID' => $this->config['opSPID'],
