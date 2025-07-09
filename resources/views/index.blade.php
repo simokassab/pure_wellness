@@ -114,7 +114,6 @@
                     },
                     body: JSON.stringify({
                         click_id: clickId,
-                        msisdn: msisdn,
                         script_id: script_id
                     })
                 });

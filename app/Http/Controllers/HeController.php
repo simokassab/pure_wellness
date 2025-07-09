@@ -102,7 +102,7 @@ class HeController extends Controller
 
 //             redirect to http://ziq-he.prime-build.co:8090/HE/oneclick/subscribeUser.php?serviceId=$serviceId&spId=$spId&shortcode=$shortcode&ti=$ti&ts=$ts&servicename=$servicename&merchantname=$merchantname
 
-            $baseUrl = 'http://www.social-sms.com/iq-dcb/HE/v1.3/oneclick/sub.php';
+            $baseUrl = 'http://ziq-he.prime-build.co:8090/HE/oneclick/subscribeUser.php';
             $queryParams = [
                 'serviceId' => $this->config['serviceId'],
                 'spId' => $this->config['spId'],
@@ -117,6 +117,19 @@ class HeController extends Controller
 
 //    return the redirect URL
             $redirectUrl = $baseUrl . '?' . http_build_query($queryParams);
+            Log::info('Redirect URL generated: ' . $redirectUrl . ' for click_id: ' . $clickId);
+            IntegrationLog::updateOrCreate(
+                [
+                    'provider' => 'SDP',
+                    'tracking_id' => $tracking->id,
+                    'event_type' => 'request',
+                    'status' => 'success',
+                ],
+                [
+                    'payload' => $queryParams,
+                    'url' => $redirectUrl,
+                ]
+            );
 //            dd($redirectUrl);
             return response()->json([
                 'success' => true,
@@ -331,14 +344,16 @@ class HeController extends Controller
 //                ts is the current timestamp of the transaction
                 'ts' => time(),
                 'servicename' => $this->config['servicename'],
-                'merchantname' => 'digitalabs',
+                'merchantname' => 'Prime Build',
                 'type' => 'he',
             ];
+            Log::info("Anti-Fraud Script Request url: " . $baseUrl . '?' . http_build_query($queryParams));
 //
             // Make the request
             $response = Http::get($baseUrl . '?' . http_build_query($queryParams));
 ////        // Check if the response is successful
            if (!$response->successful()) {
+
                 return Response::json([
                     'success' => false,
                     'message' => 'Failed to retrieve anti-fraud script',
@@ -367,7 +382,7 @@ class HeController extends Controller
             // Get MSISDN from session
             $msisdn = $request->msisdn;
             $language = session('preferredLanguage');
-            $tracking = Tracking::where('msisdn', $request->msisdn)->where('anti_fraud_click_id', $request->antiFrauduniqid)->first();
+            $tracking = Tracking::where('anti_fraud_click_id', $request->antiFrauduniqid)->first();
             // Build query parameters
             $queryParams = [
                 'serviceId' => $language == 'AR' ? $this->config['serviceIdAr'] : $this->config['serviceIdKU'],
