@@ -10,7 +10,7 @@
     <link rel="shortcut icon" href="{{ asset('assets/favicon.ico') }}" sizes="72x72" type="image/svg">
     <link rel="stylesheet" href="{{ asset('assets/css/index.css') }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <meta name="referrer" content="unsafe-url">
 </head>
 <body>
 <section class="flex flex-center">
