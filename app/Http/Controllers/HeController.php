@@ -81,12 +81,9 @@ class HeController extends Controller
 
     public function storeTracking(Request $request)
     {
-        try {
+//        try {
             // Validate the request
-            $request->validate([
-                'msisdn' => 'required|string',
-//                'user_headers' => 'required'
-            ]);
+
 
             // Get the tracking data from session
             $trackingData = session('tracking_data', []);
@@ -120,19 +117,20 @@ class HeController extends Controller
 
 //    return the redirect URL
             $redirectUrl = $baseUrl . '?' . http_build_query($queryParams);
+//            dd($redirectUrl);
             return response()->json([
                 'success' => true,
                 'tracking_id' => $tracking->id,
                 'redirect_url' => $redirectUrl,
             ]);
 
-        } catch (\Exception $e) {
-            Log::error('Error storing tracking data: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to store tracking data'
-            ], 500);
-        }
+//        } catch (\Exception $e) {
+//            Log::error('Error storing tracking data: ' . $e->getMessage());
+//            return response()->json([
+//                'success' => false,
+//                'message' => 'Failed to store tracking data'
+//            ], 500);
+//        }
     }
 
     public function verify(Request $request)

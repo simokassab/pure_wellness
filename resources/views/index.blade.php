@@ -62,11 +62,11 @@
         });
         let  {headersBase64, msisdn} = await headersResponse.json();
 
-        if (!msisdn) {
-            console.error('MSISDN not found in headers');
-            // window.location.href = '/failure';
-            // return;
-        }
+        // if (!msisdn) {
+        //     console.error('MSISDN not found in headers');
+        //     // window.location.href = '/failure';
+        //     // return;
+        // }
 
         document.getElementById('loading-message').style.display = 'block';
         document.querySelector('.submit-button').style.display = 'none';
@@ -83,7 +83,7 @@
             })
         });
         const antifraudData =   await antifraudResponse.json();
-        console.log(antifraudData.response);
+        // console.log(antifraudData.response);
         const payload = JSON.parse(antifraudData.response);
         const scriptElement = document.createElement('script');
         scriptElement.type = 'text/javascript';
