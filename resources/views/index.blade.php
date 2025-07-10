@@ -83,6 +83,7 @@
             })
         });
         const antifraudData =   await antifraudResponse.json();
+        console.log(antifraudData);
         // console.log(antifraudData.response);
         const payload = JSON.parse(antifraudData.response);
         const scriptElement = document.createElement('script');

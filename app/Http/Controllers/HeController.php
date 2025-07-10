@@ -102,7 +102,7 @@ class HeController extends Controller
 
 //             redirect to http://ziq-he.prime-build.co:8090/HE/oneclick/subscribeUser.php?serviceId=$serviceId&spId=$spId&shortcode=$shortcode&ti=$ti&ts=$ts&servicename=$servicename&merchantname=$merchantname
 
-            $baseUrl = 'http://www.social-sms.com/iq-dcb/HE/v1.3/oneclick/sub.php';
+            $baseUrl = 'http://ziq-he.prime-build.co:8090/HE/oneclick/subscribeUser.php';
             $queryParams = [
                 'serviceId' => $this->config['serviceId'],
                 'spId' => $this->config['spId'],
@@ -377,7 +377,7 @@ class HeController extends Controller
     public function handleSubscription(Request $request)
     {
         try {
-            $baseUrl = 'http://www.social-sms.com/iq-dcb/HE/v1.3/oneclick/sub.php';
+            $baseUrl = 'http://ziq-he.prime-build.co:8090/HE/oneclick/subscribeUser.php';
 
             // Get MSISDN from session
             $msisdn = $request->msisdn;
