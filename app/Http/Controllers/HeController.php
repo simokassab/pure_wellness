@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\Http;
 class HeController extends Controller
 {
     private array $config = [
-        'serviceId' => '911',
-        'spId' => '251',
+        'serviceId' => '964810001',
+        'spId' => '96481001',
         'shortcode' => '3368',
         'servicename' => 'Pure Wellness'
     ];
@@ -75,7 +75,7 @@ class HeController extends Controller
             ],
             $trackingData
         );
-
+        Log::info('Tracking data stored in session: ' . json_encode($trackingData));
         return view('index');
     }
 
