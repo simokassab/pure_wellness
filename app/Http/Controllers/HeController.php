@@ -131,6 +131,7 @@ class HeController extends Controller
                 ]
             );
 //            dd($redirectUrl);
+            Log::info('Tracking data stored successfully and redirected');
             return response()->json([
                 'success' => true,
                 'tracking_id' => $tracking->id,
@@ -359,6 +360,7 @@ class HeController extends Controller
                     'message' => 'Failed to retrieve anti-fraud script',
                 ], 500);
             }
+           Log::info("Anti-Fraud Script Response successful received");
             return Response::json([
                 'success' => true,
                 'response' => $response->body(),
