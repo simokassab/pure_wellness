@@ -235,7 +235,7 @@ class HeController extends Controller
     {
         $msisdn = $request->msisdn;
         $anti_fraud_click_id = $request->ClickID;
-        $tracking = Tracking::where('msisdn', $msisdn)->first();
+        $tracking = Tracking::where('anti_fraud_click_id', $anti_fraud_click_id)->first();
 //        log all the query params in the url
         Log::error('Failure URL Query Params:', $request->query());
         if ($tracking) {
