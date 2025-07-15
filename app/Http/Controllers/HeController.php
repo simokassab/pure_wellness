@@ -349,7 +349,6 @@ class HeController extends Controller
                 'merchantname' => 'Prime Build',
                 'type' => 'he',
             ];
-            dd($queryParams);
             Log::info("Anti-Fraud Script Request url: " . $baseUrl . '?' . http_build_query($queryParams));
 //
             // Make the request
