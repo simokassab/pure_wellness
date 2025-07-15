@@ -342,13 +342,14 @@ class HeController extends Controller
             $queryParams = [
                 'action' => 'script',
                 'ti' => $transactionId,
-                'te' => "%23subscribe",
+                'te' => $request->te,
 //                ts is the current timestamp of the transaction
                 'ts' => time(),
                 'servicename' => $this->config['servicename'],
                 'merchantname' => 'Prime Build',
                 'type' => 'he',
             ];
+            dd($queryParams);
             Log::info("Anti-Fraud Script Request url: " . $baseUrl . '?' . http_build_query($queryParams));
 //
             // Make the request

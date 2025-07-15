@@ -79,7 +79,7 @@
             },
             body: JSON.stringify({
                 // url encoded of #subscribe
-                te: '#subscribe',
+                te: '%23subscribe',
             })
         });
         const antifraudData =   await antifraudResponse.json();
