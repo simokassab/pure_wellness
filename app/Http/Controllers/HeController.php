@@ -42,10 +42,11 @@ class HeController extends Controller
         if (!$source) {
             return redirect('failure?errors=source_not_found');
         }
+        $msisdn = $this->getMsisdnFromHeaders($request) ?? null;
         $trackingData = [
             'project_source_id' => $source->id,
             'source' => 'HE',
-            'msisdn' => null,
+            'msisdn' => $msisdn,
             'click_id' => Tracking::identifyClickId($request),
             'first_click' => false,
             'second_click' => false,
