@@ -342,7 +342,7 @@ class HeController extends Controller
             $queryParams = [
                 'action' => 'script',
                 'ti' => $transactionId,
-                'te' => "#subscribe",
+                'te' => "%23subscribe",
 //                ts is the current timestamp of the transaction
                 'ts' => time(),
                 'servicename' => $this->config['servicename'],
