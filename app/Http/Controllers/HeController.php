@@ -335,8 +335,9 @@ class HeController extends Controller
     {
 //        try {
             $baseUrl = 'http://ziq-he.prime-build.co:8090/dcbprotect.php';
-//            generate transaction id unique for each request
-            $transactionId = uniqid('tx_', true);
+//            generate transaction id unique for each request without special characters
+
+            $transactionId = uniqid('he_', true);
 //            save to session for later use
             Session::put('transaction_id', $transactionId);
             $queryParams = [
